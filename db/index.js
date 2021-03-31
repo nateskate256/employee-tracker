@@ -39,7 +39,7 @@ function init() {
         case "View All Departments":
           viewDepartments();
           break;
-        case "Add a Department ":
+        case "Add a Department":
           addDepartment();
           break;
         case "View All Roles":
@@ -73,12 +73,71 @@ function addDepartment(){
     name: "department",
     message: "What is the name of the department you would like to add?"
   },
+  {
+    type: "input",
+    name: "id",
+    message: "What is the ID you would like to give this department?"
+  },
   ]).then(function(response){
     console.log(response);
-    const query = "INSERT INTO department (name) VALUES (?);";
+    const query = "INSERT INTO department (dept_name, id) VALUES (?, ?);";
 
-    const foo = connection.query(query, [response.dept_name], function(err, data){
-      console.log("Added department", response.dept_name);
+    const foo = connection.query(query, [response.department, response.id], function(err, data){
+      console.log("Added department", response.department);
+      console.log("Added ID", response.id);
+      init();
+    })
+  })
+}
+
+function viewRoles() {
+  connection.query("SELECT * FROM roles", function (err, data) {
+    console.table(data);
+    init();
+  });
+}
+
+function addRole(){
+  inquirer.prompt([{
+    type: "input",
+    name: "role",
+    message: "What is the name of the role you would like to add?"
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What ID would like to give this role?"
+  },
+  ]).then(function(response){
+    console.log(response);
+    const query = "INSERT INTO role (id, title, salary, department_id) VALUES (?, ?, ?, ?);";
+
+    const foo = connection.query(query, [response.id, response.title, response.salary, response.department_id], function(err, data){
+      console.log("Added role", response.title);
+      init();
+    })
+  })
+}
+
+function viewEmployees() {
+  connection.query("SELECT * FROM employees", function (err, data) {
+    console.table(data);
+    init();
+  });
+}
+
+function addEmployee(){
+  inquirer.prompt([{
+    type: "input",
+    name: "employee",
+    message: "What employee would you like to add?"
+  },
+  ]).then(function(response){
+    console.log(response);
+    const query = "INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?, ?);";
+
+    const foo = connection.query(query, [response.id, response.first_name, response.last_name, response.role_id,response.manager_id], function(err, data){
+      console.log("Added role", response.dept_name);
       init();
     })
   })

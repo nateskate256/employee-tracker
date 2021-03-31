@@ -2,11 +2,11 @@ DROP DATABASE IF EXISTS employee_DB;
 
 CREATE DATABASE employee_DB;
 
-USE employee_DB
+USE employee_DB;
 
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT,
-  dept_name VARCHAR(30)
+  dept_name VARCHAR(30),
   PRIMARY KEY (id)
 );
 
