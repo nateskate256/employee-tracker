@@ -26,7 +26,7 @@ function init() {
           "View All Departments",
           "Add a Department",
           "View All Roles",
-          "Add A Role",
+          "Add a Role",
           "View All Employees",
           "Add Employee",
           "Update Employee Role",
@@ -54,7 +54,11 @@ function init() {
         case "Add Employee":
           addEmployee();
           break;
+        case "Update Employee Role":
+          updateEmployee();
+          break;
         default:
+          console.log("Invalid Choice:", response.options)
           connection.end();
       }
     });
@@ -101,22 +105,39 @@ function viewRoles() {
 function addRole(){
   inquirer.prompt([{
     type: "input",
-    name: "role",
+    name: "title",
     message: "What is the name of the role you would like to add?"
+  },
+  {
+    type: "input",
+    name: "salary",
+    message: "What is the salary?"
+  },
+  {
+    type: "input",
+    name: "dept_id",
+    message: "What is the department id?"
   },
   ]).then(function(response){
     console.log(response);
-    const query = "INSERT INTO roles (title) VALUES (?);";
+    const query = "INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?);";
 
-    const foo = connection.query(query, [response.role], function(err, data){
-      console.log("Added role", response.role);
+    const foo = connection.query(query, [response.title, response.salary, response.dept_id], function(err, data){
+      console.log("Added role", response.title);
+      console.log("Added salary", response.salary);
+      console.log("Added dept_id", response.dept_id);
       init();
     })
   })
 }
 
 function viewEmployees() {
-  connection.query("SELECT * FROM employee", function (err, data) {
+  let viewString = "SELECT e.id ,e.first_name, e.last_name, r.title, d.dept_name, r.salary, em.first_name AS 'Manager First Name', em.last_name AS 'Manager Last Name' FROM employee AS e "
+  viewString += "INNER JOIN roles AS r ON e.role_id = r.id "
+  viewString += "INNER JOIN department AS d On r.department_id = d.id "
+  viewString += "INNER JOIN employee AS em ON e.manager_id = em.id"
+  console.log(viewString)
+  connection.query(viewString, function (err, data) {
     console.table(data);
     init();
   });
@@ -134,15 +155,19 @@ function addEmployee(){
   {type: "input",
   name: "roleID",
   message: "What is the employees role ID?"},
+  {type: "input",
+  name: "managerID",
+  message: "What is the employees manager ID?"},
   ])
   .then(function(response){
     console.log(response);
-    const query = "INSERT INTO employee (first_name, last_name) VALUES (?, ?);";
+    const query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);";
 
-    const foo = connection.query(query, [response.firstName, response.lastName, response.roleID], function(err, data){
+    const foo = connection.query(query, [response.firstName, response.lastName, response.roleID, response.managerID], function(err, data){
       console.log("Employee's first name:", response.firstName);
       console.log("Employee's last name:", response.lastName);
       console.log("Employee's ID:", response.roleID);
+      console.log("Employee's Manager ID:", response.managerID);
       init();
     })
   })
