@@ -1,4 +1,4 @@
-# Employee-Tracker
+# Nate Shipp's Employee-Tracker
 
 <img src= "https://user-images.githubusercontent.com/77896188/113640475-5bf03e80-9630-11eb-820f-cdd60f79045c.png">
 
